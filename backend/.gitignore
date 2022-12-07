@@ -1,0 +1,6 @@
+# Folders
+env
+
+# Files
+config.json
+db_inserts.sql

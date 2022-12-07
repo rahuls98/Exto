@@ -3,7 +3,7 @@ from flask import Flask, request
 from flask_cors import CORS
 import mysql.connector
 
-db = None
+DB_CONFIG = None
 
 app = Flask(__name__)
 CORS(app)
@@ -24,6 +24,12 @@ def get_admin_organisation(req):
 def get_user_organisation(req):
     username = req["user_username"]
     password = req["user_password"]
+    db = mysql.connector.connect(
+        host=CONFIG["DATABASE"]["HOST"],
+        user=CONFIG["DATABASE"]["USER"],
+        password=CONFIG["DATABASE"]["PASSWORD"],
+        database=CONFIG["DATABASE"]["NAME"]
+    )
     cursor = db.cursor()
     cursor.execute(f'''
         SELECT id 
@@ -32,11 +38,13 @@ def get_user_organisation(req):
     ''')
     organisation_id = cursor.fetchone()[0]
     cursor.close()
+    db.close()
     return organisation_id
 
 def get_user_organisation_from_params(req):
     username = req.args.get("user_username")
     password = req.args.get("user_password")
+    db = mysql.connector.connect(**DB_CONFIG)
     cursor = db.cursor()
     cursor.execute(f'''
         SELECT id 
@@ -45,6 +53,7 @@ def get_user_organisation_from_params(req):
     ''')
     organisation_id = cursor.fetchone()[0]
     cursor.close()
+    db.close()
     return organisation_id
 
 def get_res(cursor):
@@ -77,13 +86,21 @@ def create_customer():
 @app.route('/customers', methods = ['GET'])
 def read_customers():
     organisation_id = get_user_organisation_from_params(request)
+    db = mysql.connector.connect(
+        host=CONFIG["DATABASE"]["HOST"],
+        user=CONFIG["DATABASE"]["USER"],
+        password=CONFIG["DATABASE"]["PASSWORD"],
+        database=CONFIG["DATABASE"]["NAME"]
+    )
     cursor = db.cursor()
     cursor.execute(f'''
         SELECT *
         FROM customer
         WHERE organisation={organisation_id};
     ''')
-    return {"customers": get_res(cursor=cursor)}
+    res = get_res(cursor=cursor)
+    db.close()
+    return {"customers": res}
 
 @app.route('/customers', methods = ['PUT'])
 def update_customer():
@@ -283,13 +300,16 @@ def create_scrummaster():
 @app.route('/scrum_masters', methods = ['GET'])
 def read_scrummasters():
     organisation_id = get_user_organisation_from_params(request)
+    db = mysql.connector.connect(**DB_CONFIG)
     cursor = db.cursor()
     cursor.execute(f'''
         SELECT *
         FROM employee JOIN scrum_master ON employee.id=scrum_master.id
         WHERE organisation={organisation_id};
     ''')
-    return {"testers": get_res(cursor=cursor)}
+    res = get_res(cursor=cursor)
+    db.close()
+    return {"scrum_masters": res}
 
 
 #--- Project manager ---#
@@ -310,13 +330,21 @@ def create_projectmanager():
 @app.route('/project_managers', methods = ['GET'])
 def read_projectmanagers():
     organisation_id = get_user_organisation_from_params(request)
+    db = mysql.connector.connect(
+        host=CONFIG["DATABASE"]["HOST"],
+        user=CONFIG["DATABASE"]["USER"],
+        password=CONFIG["DATABASE"]["PASSWORD"],
+        database=CONFIG["DATABASE"]["NAME"]
+    )
     cursor = db.cursor()
     cursor.execute(f'''
         SELECT *
         FROM employee JOIN project_manager ON employee.id=project_manager.id
         WHERE organisation={organisation_id};
     ''')
-    return {"testers": get_res(cursor=cursor)}
+    res = get_res(cursor=cursor)
+    db.close()
+    return {"project_managers": res}
 
 
 #--- Project ---#
@@ -324,6 +352,12 @@ def read_projectmanagers():
 def create_project():
     req = request.get_json()
     organisation_id = get_user_organisation(req)
+    db = mysql.connector.connect(
+        host=CONFIG["DATABASE"]["HOST"],
+        user=CONFIG["DATABASE"]["USER"],
+        password=CONFIG["DATABASE"]["PASSWORD"],
+        database=CONFIG["DATABASE"]["NAME"]
+    )
     title = req["title"]
     customer = req["customer"]
     start_date = req["start_date"]
@@ -336,20 +370,30 @@ def create_project():
         VALUES ("{title}", {organisation_id}, {customer}, "{start_date}", "{end_date}", {project_manager}, {scrum_master});
     ''')
     db.commit()
+    lastrowid = cursor.lastrowid
     cursor.close()
-    return {"message": "Inserted!", "tuple_id": cursor.lastrowid}
+    db.close()
+    return {"message": "Inserted!", "tuple_id": lastrowid}
 
 @app.route('/projects', methods = ['GET'])
 def read_projects():
     organisation_id = get_user_organisation_from_params(request)
     request.args.get('username')
+    db = mysql.connector.connect(
+        host=CONFIG["DATABASE"]["HOST"],
+        user=CONFIG["DATABASE"]["USER"],
+        password=CONFIG["DATABASE"]["PASSWORD"],
+        database=CONFIG["DATABASE"]["NAME"]
+    )
     cursor = db.cursor()
     cursor.execute(f'''
         SELECT *
         FROM project
         WHERE organisation={organisation_id};
     ''')
-    return {"projects": get_res(cursor=cursor)}
+    res = get_res(cursor=cursor)
+    db.close()
+    return {"projects": res}
 
 @app.route('/projects', methods = ['PUT'])
 def update_project():
@@ -675,22 +719,21 @@ def read_itemtypes():
         SELECT *
         FROM item_type;
     ''')
-    return {"item_typees": get_res(cursor=cursor)}
+    return {"item_types": get_res(cursor=cursor)}
 
 
 if __name__ == '__main__':
     CONFIG = None
     with open("./config.json", "rb") as f:
         CONFIG = json.load(f)
-    db = mysql.connector.connect(
-        host=CONFIG["DATABASE"]["HOST"],
-        user=CONFIG["DATABASE"]["USER"],
-        password=CONFIG["DATABASE"]["PASSWORD"],
-        database=CONFIG["DATABASE"]["NAME"]
-    )
+    DB_CONFIG = {
+        "host": CONFIG["DATABASE"]["HOST"],
+        "user": CONFIG["DATABASE"]["USER"],
+        "password": CONFIG["DATABASE"]["PASSWORD"],
+        "database": CONFIG["DATABASE"]["NAME"]
+    }
     app.run(
         host=CONFIG["APPLICATION"]["HOST"],
         port=CONFIG["APPLICATION"]["PORT"], 
         debug=CONFIG["APPLICATION"]["DEBUG"]
     )
-    db.close()

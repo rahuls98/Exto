@@ -93,26 +93,14 @@ CREATE TABLE IF NOT EXISTS project (
     CONSTRAINT uq_organisation_project UNIQUE (organisation, title)
 );
 
-CREATE TABLE IF NOT EXISTS epic (
+CREATE TABLE IF NOT EXISTS story (
     id INTEGER AUTO_INCREMENT NOT NULL,
     title VARCHAR(100) NOT NULL,
     description VARCHAR(500) NULL,
     project INTEGER NOT NULL,
     PRIMARY KEY (id),
-    CONSTRAINT fk_epic_project FOREIGN KEY (project) REFERENCES project (id) ON UPDATE CASCADE ON DELETE CASCADE,
-    CONSTRAINT uq_project_epic UNIQUE (project, title)
-);
-
-CREATE TABLE IF NOT EXISTS story (
-    id INTEGER AUTO_INCREMENT NOT NULL,
-    title VARCHAR(100) NOT NULL,
-    description VARCHAR(500) NULL,
-    epic INTEGER NOT NULL,
-    tag_color VARCHAR(10) NOT NULL,
-    PRIMARY KEY (id),
-    CONSTRAINT fk_story_epic FOREIGN KEY (epic) REFERENCES epic (id) ON UPDATE CASCADE ON DELETE CASCADE,
-    CONSTRAINT uq_epic_story UNIQUE (epic, title),
-    CONSTRAINT uq_story_tagcolor UNIQUE (tag_color)
+    CONSTRAINT fk_story_project FOREIGN KEY (project) REFERENCES project (id) ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT uq_project_story UNIQUE (project, title)
 );
 
 CREATE TABLE IF NOT EXISTS item_status (

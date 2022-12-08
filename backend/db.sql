@@ -129,6 +129,7 @@ CREATE TABLE IF NOT EXISTS sprint (
     definition_of_done VARCHAR(500) NULL,
     project INTEGER NOT NULL,
     scrum_master INTEGER NULL,
+    completed BOOLEAN NOT NULL,
     PRIMARY KEY (id),
     CONSTRAINT fk_sprint_project FOREIGN KEY (project) REFERENCES project (id) ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT fk_sprint_scrummaster FOREIGN KEY (scrum_master) REFERENCES scrum_master (id) ON UPDATE CASCADE ON DELETE SET NULL,
@@ -152,3 +153,36 @@ CREATE TABLE IF NOT EXISTS item (
     CONSTRAINT fk_item_employee FOREIGN KEY (assigned_to) REFERENCES employee (id) ON UPDATE CASCADE ON DELETE SET NULL,
     CONSTRAINT uq_story_item UNIQUE (story, title)
 );
+
+DELIMITER //
+CREATE PROCEDURE IF NOT EXISTS get_backlog_items(IN organisation_id INTEGER)
+BEGIN
+	SELECT item.id, item.title
+    FROM item JOIN story ON item.story=story.id 
+    JOIN project ON story.project=project.id
+    WHERE project.organisation=organisation_id AND item.status=1;
+END //
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE IF NOT EXISTS get_sprint_item_composition(IN sprint_id INTEGER)
+BEGIN
+	SELECT item_status.title AS title, COUNT(*) AS items
+    FROM item JOIN item_status ON item.status=item_status.id
+    WHERE item.sprint=sprint_id
+    GROUP BY item_status.title;
+END //
+DELIMITER ;
+
+DELIMITER //
+CREATE TRIGGER incomplete_tasks_to_backlog
+AFTER UPDATE ON sprint
+FOR EACH ROW
+BEGIN
+    IF OLD.completed=FALSE AND NEW.completed=TRUE THEN
+        UPDATE item
+        SET status=1, sprint=NULL
+        WHERE sprint = NEW.id AND status != 4;
+    END IF;
+END //
+DELIMITER ;

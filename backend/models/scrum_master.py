@@ -22,7 +22,7 @@ def read_scrummasters(request, db_config):
     db = mysql.connector.connect(**db_config)
     cursor = db.cursor()
     cursor.execute(f'''
-        SELECT *
+        SELECT employee.id AS id, employee.first_name as first_name, employee.last_name as last_name
         FROM employee JOIN scrum_master ON employee.id=scrum_master.id
         WHERE organisation={organisation_id};
     ''')

@@ -34,6 +34,17 @@ def read_items(request, db_config):
     db.close()
     return {"items": res}
 
+def read_backlog_items(request, db_config):
+    organisation_id = get_user_organisation_from_params(request, db_config)
+    db = mysql.connector.connect(**db_config)
+    cursor = db.cursor()
+    cursor.execute(f'''
+        CALL get_backlog_items({organisation_id});
+    ''')
+    res = get_res(cursor=cursor)
+    db.close()
+    return {"backlog_items": res}
+
 def update_item(request, db_config):
     req = request.get_json()
     organisation_id = get_user_organisation(req, db_config)

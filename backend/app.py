@@ -2,19 +2,19 @@ import json
 from flask import Flask, request
 from flask_cors import CORS
 
-from models.customer import create_customer, read_customers, update_customer, delete_customer
-from models.employee import create_employee, read_employees, update_employee, delete_employee
-from models.tester import create_tester, read_testers, update_tester
-from models.developer import create_developer, read_developers, update_developer
-from models.project_manager import create_projectmanager, read_projectmanagers
-from models.scrum_master import create_scrummaster, read_scrummasters
-from models.project import create_project, read_projects, update_project, delete_project
+from models.customer import *
+from models.employee import *
+from models.tester import *
+from models.developer import *
+from models.project_manager import *
+from models.scrum_master import *
+from models.project import *
 # from models.epic import create_epic, read_epics, update_epic, delete_epic
-from models.story import create_story, read_stories, update_story, delete_story
-from models.item import create_item, read_items, update_item, delete_item
-from models.sprint import create_sprint, read_sprints, update_sprint, delete_sprint
-from models.item_type import read_itemtypes
-from models.item_status import read_itemstatuses
+from models.story import *
+from models.item import *
+from models.sprint import *
+from models.item_type import *
+from models.item_status import *
 
 DB_CONFIG = None
 
@@ -145,6 +145,9 @@ def post_items():
 @app.route('/items', methods = ['GET'])
 def get_items():
     return read_items(request, DB_CONFIG)
+@app.route('/items/backlog', methods = ['GET'])
+def get_backlog_items():
+    return read_backlog_items(request, DB_CONFIG)
 @app.route('/items', methods = ['PUT'])
 def put_items():
     return update_item(request, DB_CONFIG)
@@ -160,9 +163,15 @@ def post_sprints():
 @app.route('/sprints', methods = ['GET'])
 def get_sprints():
     return read_sprints(request, DB_CONFIG)
+@app.route('/sprints/item_composition', methods = ['GET'])
+def get_item_composition():
+    return read_item_composition(request, DB_CONFIG)
 @app.route('/sprints', methods = ['PUT'])
 def put_sprints():
     return update_sprint(request, DB_CONFIG)
+@app.route('/sprints/complete', methods = ['PUT'])
+def put_sprints_complete():
+    return update_sprint_to_complete(request, DB_CONFIG)
 @app.route('/sprints', methods = ['DELETE'])
 def delete_sprints():
     return delete_sprint(request, DB_CONFIG)

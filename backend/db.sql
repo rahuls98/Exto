@@ -186,3 +186,20 @@ BEGIN
     END IF;
 END //
 DELIMITER ;
+
+DELIMITER //
+CREATE FUNCTION get_employee_name(
+	employee_id INTEGER
+) 
+RETURNS VARCHAR(200)
+DETERMINISTIC
+BEGIN
+	DECLARE full_name VARCHAR(200);
+    
+	SELECT CONCAT(first_name, ' ', last_name) 
+    FROM employee WHERE id=employee_id
+    INTO full_name;
+    
+    RETURN full_name;
+END //
+DELIMITER ;

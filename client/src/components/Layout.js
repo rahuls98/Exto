@@ -1,9 +1,9 @@
 import {useState} from "react"
-import { Layout, Typography} from "antd";
+import { Layout } from "antd";
 import SidebarMenu from "./SidebarMenu";
 import MainContent from "./MainContent";
-const { Title } = Typography;
-const { Header, Footer, Sider, Content } = Layout;
+import ProjectsApp from "./ProjectsApp";
+const { Footer, Sider, Content } = Layout;
 
 const MainLayout = () => {
     const [content, setContent] = useState("Sprints")
@@ -12,7 +12,7 @@ const MainLayout = () => {
         setContent(inp);
     }
 
-    return <Layout style={{height: '100vh'}}>
+    return (content === "Sprints") ? <Layout style={{height: '100vh'}}>
         <Sider
             breakpoint="xl"
             collapsedWidth="0"
@@ -23,21 +23,10 @@ const MainLayout = () => {
             console.log(collapsed, type);
             }}
         >
-            <div style={{height: "30px"}}>Exto</div>
+            <div style={{height: "30px"}}></div>
             <SidebarMenu setLayoutContent={setLayoutContent}/>
         </Sider>
         <Layout>
-            <Header style={{ padding: 0, background: "white" }}>
-                <Title
-                    style={{
-                    marginLeft: 25,
-                    marginBottom: 20,
-                    }}
-                    level={2}
-                >
-                    {content}
-                </Title>
-            </Header>
             <Content style={{ height: "100vh", background: 'white'}}>
                 <MainContent content={content} />
             </Content>
@@ -45,7 +34,7 @@ const MainLayout = () => {
                 Exto ©2022
             </Footer>
         </Layout>
-    </Layout>
+    </Layout> : <ProjectsApp setLayoutContent={setLayoutContent}/>
 }
 
 export default MainLayout;

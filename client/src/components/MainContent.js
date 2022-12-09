@@ -4,7 +4,6 @@ const MainContent = (props) => {
     const getContent = () => {
         switch (props.content) {
             case "Sprints": return <SprintContent />
-            case "Projects": return <h1>Projects content</h1>
         }
     }
 

@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import { Modal, Button, Form, Input, InputNumber, DatePicker, Select, Transfer, Table, Space, Spin } from "antd";
+import { Typography, Modal, Button, Form, Input, InputNumber, DatePicker, Select, Transfer, Table, Space, Spin } from "antd";
 import { Pie } from '@ant-design/plots';
 import api from "../api";
 import {CheckOutlined} from "@ant-design/icons"
 const { Column } = Table;
+const { Title } = Typography;
 
 
 const SprintContent = () => {
@@ -189,6 +190,9 @@ const SprintContent = () => {
     }
 
     return <div>
+        <Title style={{marginBottom: 20 }} level={2}>
+            Sprints
+        </Title>
         <Button type="primary" onClick={showModal}>
             Create Sprint
         </Button>

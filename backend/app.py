@@ -43,6 +43,9 @@ def post_employees():
 @app.route('/employees', methods = ['GET'])
 def get_employees():
     return read_employees(request, DB_CONFIG)
+@app.route('/employees/full_name', methods = ['GET'])
+def get_employee_name():
+    return read_employee_name(request, DB_CONFIG)
 @app.route('/employees', methods = ['PUT'])
 def put_employees():
     return update_employee(request, DB_CONFIG)

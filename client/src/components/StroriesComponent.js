@@ -13,8 +13,8 @@ function StoriesComponent(props) {
     api
       .get("/projects", {
         params: {
-          user_username: "user@nike.com",
-          user_password: "user@nike.com",
+          user_username: window.localStorage.getItem('user_username'),
+          user_password: window.localStorage.getItem('user_password'),
         },
       })
       .then((res) => {
@@ -29,8 +29,8 @@ function StoriesComponent(props) {
     api
       .delete("/stories", {
         data: {
-          user_username: "user@nike.com",
-          user_password: "user@nike.com",
+          user_username: window.localStorage.getItem('user_username'),
+          user_password: window.localStorage.getItem('user_password'),
           story: id,
         },
       })
@@ -46,8 +46,8 @@ function StoriesComponent(props) {
 
   const onFinish = (values) => {
     const createBody = {};
-    createBody.user_username = "user@nike.com";
-    createBody.user_password = "user@nike.com";
+    createBody.user_username = window.localStorage.getItem('user_username');
+    createBody.user_password = window.localStorage.getItem('user_password');
     createBody.title = values.title;
     createBody.project = values.project;
     api

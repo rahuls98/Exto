@@ -2,14 +2,14 @@ import mysql.connector
 from util.utils import get_user_organisation, get_user_organisation_from_params, get_res
 
 def create_epic(request, db_config):
+    db = mysql.connector.connect(**db_config)
+    cursor = db.cursor()
     try:
         req = request.get_json()
         organisation_id = get_user_organisation(req, db_config)
         title = req["title"]
         description = req.get("description", )
         project = req["project"]
-        db = mysql.connector.connect(**db_config)
-        cursor = db.cursor()
         cursor.execute(f'''
             INSERT INTO epic (title, description, project)
             VALUES ("{title}", "{description}", {project});
@@ -20,14 +20,16 @@ def create_epic(request, db_config):
         db.close()
         return {"message": "Inserted!", "tuple_id": lastrowid}
     except Exception as e:
+        cursor.close()
+        db.close()
         return {"error": str(e.__class__.__name__), "message": str(e)}
 
 def read_epics(request, db_config):
+    db = mysql.connector.connect(**db_config)
+    cursor = db.cursor()
     try:
         organisation_id = get_user_organisation_from_params(request, db_config)
         project_id = request.args.get("project")
-        db = mysql.connector.connect(**db_config)
-        cursor = db.cursor()
         cursor.execute(f'''
             SELECT *
             FROM epic
@@ -37,9 +39,12 @@ def read_epics(request, db_config):
         db.close()
         return {"epics": res}
     except Exception as e:
+        db.close()
         return {"error": str(e.__class__.__name__), "message": str(e)}
 
 def update_epic(request, db_config):
+    db = mysql.connector.connect(**db_config)
+    cursor = db.cursor()
     try:
         req = request.get_json()
         organisation_id = get_user_organisation(req, db_config)
@@ -47,8 +52,6 @@ def update_epic(request, db_config):
         title = req["title"]
         description = req.get("description", )
         project = req["project"]
-        db = mysql.connector.connect(**db_config)
-        cursor = db.cursor()
         cursor.execute(f'''
             UPDATE epic
             SET title="{title}", description="{description}", project={project}
@@ -59,15 +62,17 @@ def update_epic(request, db_config):
         db.close()
         return {"message": "Updated!"}
     except Exception as e:
+        cursor.close()
+        db.close()
         return {"error": str(e.__class__.__name__), "message": str(e)}
 
 def delete_epic(request, db_config):
+    db = mysql.connector.connect(**db_config)
+    cursor = db.cursor()
     try:
         req = request.get_json()
         organisation_id = get_user_organisation(req, db_config)
         epic_id = req["epic"]
-        db = mysql.connector.connect(**db_config)
-        cursor = db.cursor()
         cursor.execute(f'''
             DELETE FROM epic
             WHERE id={epic_id};
@@ -77,4 +82,6 @@ def delete_epic(request, db_config):
         db.close()
         return {"message": "Deleted!"}
     except Exception as e:
+        cursor.close()
+        db.close()
         return {"error": str(e.__class__.__name__), "message": str(e)}

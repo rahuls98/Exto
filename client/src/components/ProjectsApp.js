@@ -19,8 +19,8 @@ const ProjectsApp = (props) => {
     api
     .get("/projects", {
       params: {
-        user_username: "user@nike.com",
-        user_password: "user@nike.com",
+        user_username: window.localStorage.getItem('user_username'),
+        user_password: window.localStorage.getItem('user_password'),
       },
     })
     .then(function (response) {
@@ -38,8 +38,8 @@ const ProjectsApp = (props) => {
         api
           .get("/projects", {
             params: {
-              user_username: "user@nike.com",
-              user_password: "user@nike.com",
+              user_username: window.localStorage.getItem('user_username'),
+              user_password: window.localStorage.getItem('user_password'),
             },
           })
           .then(function (response) {
@@ -57,8 +57,8 @@ const ProjectsApp = (props) => {
         api
           .get("/stories", {
             params: {
-              user_username: "user@nike.com",
-              user_password: "user@nike.com",
+              user_username: window.localStorage.getItem('user_username'),
+              user_password: window.localStorage.getItem('user_password'),
               project: id,
             },
           })
@@ -77,8 +77,8 @@ const ProjectsApp = (props) => {
         api
           .get("/items", {
             params: {
-              user_username: "user@nike.com",
-              user_password: "user@nike.com",
+              user_username: window.localStorage.getItem('user_username'),
+              user_password: window.localStorage.getItem('user_password'),
               story: id,
             },
           })

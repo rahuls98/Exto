@@ -20,8 +20,8 @@ function ItemComponent(props) {
     api
       .get("/projects", {
         params: {
-          user_username: "user@nike.com",
-          user_password: "user@nike.com",
+          user_username: window.localStorage.getItem('user_username'),
+          user_password: window.localStorage.getItem('user_password'),
         },
       })
       .then((res) => {
@@ -31,8 +31,8 @@ function ItemComponent(props) {
           api
             .get("/stories", {
               params: {
-                user_username: "user@nike.com",
-                user_password: "user@nike.com",
+                user_username: window.localStorage.getItem('user_username'),
+                user_password: window.localStorage.getItem('user_password'),
                 project: element.id,
               },
             })
@@ -70,8 +70,8 @@ function ItemComponent(props) {
     api
       .get("/employees", {
         params: {
-          user_username: "user@nike.com",
-          user_password: "user@nike.com",
+          user_username: window.localStorage.getItem('user_username'),
+          user_password: window.localStorage.getItem('user_password'),
         },
       })
       .then((res) => {
@@ -85,15 +85,15 @@ function ItemComponent(props) {
   const onUpdate = (values) => {
     console.log("Success", values);
     const updateBody = {};
-    updateBody.user_username = "user@nike.com";
-    updateBody.user_password = "user@nike.com";
+    updateBody.user_username = window.localStorage.getItem('user_username');
+    updateBody.user_password = window.localStorage.getItem('user_password');
     updateBody.item = currItem.id;
     updateBody.title = currItem.title;
     updateBody.description = currItem.description;
     updateBody.story = currItem.story;
     updateBody.status = values.status;
-    updateBody.type = values.type;
-    updateBody.sprint = (values.type === 1) ? null : currItem.sprint;
+    updateBody.type = currItem.type;
+    updateBody.sprint = (values.status === 1) ? null : currItem.sprint;
     values.assigned_to
       ? (updateBody.assigned_to = values.assigned_to)
       : (updateBody.assigned_to = null);
@@ -117,8 +117,8 @@ function ItemComponent(props) {
 
   const onFinish = (values) => {
     const createBody = {};
-    createBody.user_username = "user@nike.com";
-    createBody.user_password = "user@nike.com";
+    createBody.user_username = window.localStorage.getItem('user_username');
+    createBody.user_password = window.localStorage.getItem('user_password');
     createBody.title = values.title;
     createBody.story = props.parentID;
     createBody.type = values.type;
@@ -141,8 +141,8 @@ function ItemComponent(props) {
     api
       .delete("/items", {
         data: {
-          user_username: "user@nike.com",
-          user_password: "user@nike.com",
+          user_username: window.localStorage.getItem('user_username'),
+          user_password: window.localStorage.getItem('user_password'),
           item: id,
         },
       })
@@ -357,7 +357,7 @@ function ItemComponent(props) {
               }
             />
           </Form.Item> */}
-          <Form.Item
+          {/* <Form.Item
             label="Type"
             name="type"
             rules={[
@@ -375,7 +375,7 @@ function ItemComponent(props) {
                 return obj;
               })}
             />
-          </Form.Item>
+          </Form.Item> */}
           <Form.Item
             label="Status"
             name="status"

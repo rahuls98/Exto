@@ -20,8 +20,8 @@ const Project = (props) => {
     useEffect(() => {
         api.get("/projects", {
             params: {
-                user_username: "user@nike.com",
-                user_password: "user@nike.com",
+                user_username: window.localStorage.getItem('user_username'),
+                user_password: window.localStorage.getItem('user_password'),
             },
         }).then(function (response) {
             setProjects(response.data.projects);
@@ -32,8 +32,8 @@ const Project = (props) => {
         api
         .get("/project_managers", {
         params: {
-            user_username: "user@nike.com",
-            user_password: "user@nike.com",
+            user_username: window.localStorage.getItem('user_username'),
+            user_password: window.localStorage.getItem('user_password'),
         },
         })
         .then(function (response) {
@@ -53,8 +53,8 @@ const Project = (props) => {
         api
         .get("/scrum_masters", {
         params: {
-            user_username: "user@nike.com",
-            user_password: "user@nike.com",
+            user_username: window.localStorage.getItem('user_username'),
+            user_password: window.localStorage.getItem('user_password'),
         },
         })
         .then(function (response) {
@@ -74,8 +74,8 @@ const Project = (props) => {
         api
         .get("/customers", {
         params: {
-            user_username: "user@nike.com",
-            user_password: "user@nike.com",
+            user_username: window.localStorage.getItem('user_username'),
+            user_password: window.localStorage.getItem('user_password'),
         },
         })
         .then(function (response) {
@@ -103,8 +103,8 @@ const Project = (props) => {
     
       const deleteProject = (id) => {
         const delBody = {};
-        delBody.user_username = "user@nike.com";
-        delBody.user_password = "user@nike.com";
+        delBody.user_username = window.localStorage.getItem('user_username');
+        delBody.user_password = window.localStorage.getItem('user_password');
         delBody.project = id;
     
         api
@@ -133,8 +133,8 @@ const Project = (props) => {
     const onFinish = (values) => {
         if (modelOperation == "Create") {
           const project = {};
-          project.user_username = "user@nike.com";
-          project.user_password = "user@nike.com";
+          project.user_username = window.localStorage.getItem('user_username');
+          project.user_password = window.localStorage.getItem('user_password');
           project.title = values.title;
           project.customer = values.customer;
           project.start_date = `${values.startDate.year()}-${
@@ -156,8 +156,8 @@ const Project = (props) => {
             });
         } else {
           const project = {};
-          project.user_username = "user@nike.com";
-          project.user_password = "user@nike.com";
+          project.user_username = window.localStorage.getItem('user_username');
+          project.user_password = window.localStorage.getItem('user_password');
           project.title = values.title;
           project.project = currProject.id;
           project.customer = values.customer;

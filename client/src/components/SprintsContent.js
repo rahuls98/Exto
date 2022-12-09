@@ -21,8 +21,8 @@ const SprintContent = () => {
     useEffect(() => {
         api.get("/projects", {
             params: {
-                user_username: "user@nike.com",
-                user_password: "user@nike.com",
+                user_username: window.localStorage.getItem('user_username'),
+                user_password: window.localStorage.getItem('user_password'),
             },
         }).then(function (response) {
             const projectOptions = response.data.projects.map((item) => {
@@ -38,8 +38,8 @@ const SprintContent = () => {
 
         api.get("/sprints", {
             params: {
-                user_username: "user@nike.com",
-                user_password: "user@nike.com",
+                user_username: window.localStorage.getItem('user_username'),
+                user_password: window.localStorage.getItem('user_password'),
             },
         }).then(function (response) {
             console.log(response.data.sprints)
@@ -50,8 +50,8 @@ const SprintContent = () => {
 
         api.get("/scrum_masters", {
             params: {
-                user_username: "user@nike.com",
-                user_password: "user@nike.com",
+                user_username: window.localStorage.getItem('user_username'),
+                user_password: window.localStorage.getItem('user_password'),
             },
         }).then(function (response) {
             const scrumMasterOptions = response.data.scrum_masters.map((item) => {
@@ -67,8 +67,8 @@ const SprintContent = () => {
 
         api.get("/items/backlog", {
             params: {
-                user_username: "user@nike.com",
-                user_password: "user@nike.com",
+                user_username: window.localStorage.getItem('user_username'),
+                user_password: window.localStorage.getItem('user_password'),
             },
         }).then(function (response) {
             const backlogItemOptions = response.data.backlog_items.map((item) => {
@@ -99,8 +99,8 @@ const SprintContent = () => {
         setIsMetricsModalOpen(true);
         api.get(`/sprints/item_composition`, {
             params: {
-                user_username: "user@nike.com",
-                user_password: "user@nike.com",
+                user_username: window.localStorage.getItem('user_username'),
+                user_password: window.localStorage.getItem('user_password'),
                 id: sprint_id
             },
         }).then(function (response) {
@@ -149,8 +149,8 @@ const SprintContent = () => {
 
     const onFinish = async (values) => {
         const sprint = {};
-        sprint.user_username = "user@nike.com";
-        sprint.user_password = "user@nike.com";
+        sprint.user_username = window.localStorage.getItem('user_username');
+        sprint.user_password = window.localStorage.getItem('user_password');
         sprint.sprint_number = values.sprintNumber
         sprint.start_date = `${values.startDate.year()}-${values.startDate.month() + 1}-${values.startDate.date().toString().padStart(2, "0")}`
         sprint.duration = values.duration
@@ -178,8 +178,8 @@ const SprintContent = () => {
 
     const markSprintComplete = (sprintId) => {
         const body = {};
-        body.user_username = "user@nike.com";
-        body.user_password = "user@nike.com";
+        body.user_username = window.localStorage.getItem('user_username');
+        body.user_password = window.localStorage.getItem('user_password');
         body.sprint = sprintId;
         api.put("/sprints/complete", body)
         .then(function (res) {
@@ -192,8 +192,8 @@ const SprintContent = () => {
 
         api.get("/sprints", {
             params: {
-                user_username: "user@nike.com",
-                user_password: "user@nike.com",
+                user_username: window.localStorage.getItem('user_username'),
+                user_password: window.localStorage.getItem('user_password'),
             },
         }).then(function (response) {
             console.log(response.data.sprints)

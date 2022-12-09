@@ -88,12 +88,12 @@ function ItemComponent(props) {
     updateBody.user_username = "user@nike.com";
     updateBody.user_password = "user@nike.com";
     updateBody.item = currItem.id;
-    updateBody.title = values.title;
-    updateBody.description = values.description;
-    updateBody.story = values.story;
+    updateBody.title = currItem.title;
+    updateBody.description = currItem.description;
+    updateBody.story = currItem.story;
     updateBody.status = values.status;
     updateBody.type = values.type;
-    updateBody.sprint = currItem.sprint;
+    updateBody.sprint = (values.type === 1) ? null : currItem.sprint;
     values.assigned_to
       ? (updateBody.assigned_to = values.assigned_to)
       : (updateBody.assigned_to = null);
@@ -101,10 +101,12 @@ function ItemComponent(props) {
     api
       .put("/items", updateBody)
       .then((res) => {
-        window.location.reload(false);
+        alert(res.data.message)
+        props.setTable(2, props.parentID);
       })
       .catch((err) => {
         console.log(err);
+        alert(err.response.data.message)
       });
     setCurrItem({});
     setUpdateModal(false);
@@ -118,20 +120,40 @@ function ItemComponent(props) {
     createBody.user_username = "user@nike.com";
     createBody.user_password = "user@nike.com";
     createBody.title = values.title;
-    createBody.story = values.story;
+    createBody.story = props.parentID;
     createBody.type = values.type;
 
     api
       .post("/items", createBody)
       .then((res) => {
-        console.log("Success");
-        window.location.reload(false);
+        alert(res.data.message)
+        props.setTable(2, props.parentID);
       })
       .catch((err) => {
         console.log(err);
+        alert(err.response.data.message)
       });
 
     setIsModalOpen(false);
+  };
+
+  const deleteItem = (id) => {
+    api
+      .delete("/items", {
+        data: {
+          user_username: "user@nike.com",
+          user_password: "user@nike.com",
+          item: id,
+        },
+      })
+      .then((res) => {
+        alert(res.data.message)
+        props.setTable(2, props.parentID);
+      })
+      .catch((err) => {
+        console.log(err);
+        alert(err.response.data.message)
+      });
   };
 
   const showModal = () => {
@@ -189,7 +211,7 @@ function ItemComponent(props) {
               <Input />
             </Form.Item>
 
-            <Form.Item
+            {/* <Form.Item
               label="Story"
               name="story"
               rules={[
@@ -215,7 +237,7 @@ function ItemComponent(props) {
                     : []
                 }
               />
-            </Form.Item>
+            </Form.Item> */}
             <Form.Item
               label="Type"
               name="type"
@@ -269,7 +291,7 @@ function ItemComponent(props) {
           onFinish={onUpdate}
           autoComplete="off"
         >
-          <Form.Item
+          {/* <Form.Item
             label="Title"
             name="title"
             rules={[
@@ -286,9 +308,9 @@ function ItemComponent(props) {
                   : null
               }
             />
-          </Form.Item>
+          </Form.Item> */}
 
-          <Form.Item
+          {/* <Form.Item
             label="Description"
             name="description"
             rules={[
@@ -306,9 +328,9 @@ function ItemComponent(props) {
                   : null
               }
             />
-          </Form.Item>
+          </Form.Item> */}
 
-          <Form.Item
+          {/* <Form.Item
             label="Story"
             name="story"
             rules={[
@@ -334,7 +356,7 @@ function ItemComponent(props) {
                   : []
               }
             />
-          </Form.Item>
+          </Form.Item> */}
           <Form.Item
             label="Type"
             name="type"
@@ -370,7 +392,7 @@ function ItemComponent(props) {
                 obj.value = it.id;
                 obj.label = it.title;
                 return obj;
-              })}
+              })}//.filter((it) => it.label !== "Backlog")}
             />
           </Form.Item>
           {currItem.sprint != null && (
@@ -412,8 +434,12 @@ function ItemComponent(props) {
           dataIndex="title"
           key="title"
         />
-        <Column title="Assigned To" dataIndex="assigned_to" key="assigned_to" />
-        <Column title="Sprint" dataIndex="sprint" key="sprint" />
+        <Column title="Assigned To" dataIndex="assigned_to" key="assigned_to" render={(_, record) =>
+            record.assigned_to || "-"
+          }/>
+        <Column title="Sprint" dataIndex="sprint" key="sprint" render={(_, record) =>
+            record.sprint || "-"
+          }/>
         <Column
           title="Type"
           render={(_, record) =>
@@ -445,7 +471,13 @@ function ItemComponent(props) {
               >
                 Update{" "}
               </a>
-              <a>Delete</a>
+              <a
+                onClick={() => {
+                  deleteItem(record.id);
+                }}
+              >
+                Delete
+              </a>
             </Space>
           )}
         />

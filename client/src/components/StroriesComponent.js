@@ -35,10 +35,12 @@ function StoriesComponent(props) {
         },
       })
       .then((res) => {
-        window.location.reload(false);
+        alert(res.data.message)
+        props.setTable(1, props.parentID);
       })
       .catch((err) => {
         console.log(err);
+        alert(err.response.data.message)
       });
   };
 
@@ -51,10 +53,12 @@ function StoriesComponent(props) {
     api
       .post("/stories", createBody)
       .then((res) => {
-        window.location.reload(false);
+        alert(res.data.message)
+        props.setTable(1, props.parentID);
       })
       .catch((err) => {
         console.log(err);
+        alert(err.response.data.message)
       });
     setIsModalOpen(false);
   };
@@ -80,7 +84,7 @@ function StoriesComponent(props) {
           Create Story
         </Button>
         <Modal
-          title="Basic Modal"
+          title="Create Story"
           open={isModalOpen}
           onOk={handleOk}
           onCancel={handleCancel}
@@ -154,7 +158,9 @@ function StoriesComponent(props) {
           )}
           key="title"
         />
-        <Column title="Description" dataIndex="description" key="description" />
+        <Column title="Description" dataIndex="description" key="description" render={(_, record) =>
+            (record.description === "None") ? "-" : record.description
+          }/>
         <Column title="Project" dataIndex="project" key="project" />
         <Column
           title="Action"

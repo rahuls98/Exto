@@ -1,4 +1,6 @@
 import mysql.connector
+import json
+from flask import Response
 from util.utils import get_user_organisation, get_user_organisation_from_params, get_res
 
 def create_sprint(request, db_config):
@@ -30,7 +32,10 @@ def create_sprint(request, db_config):
         db.close()
         return {"message": "Inserted!", "tuple_id": lastrowid}
     except Exception as e:
-        return {"error": e.__class__.__name__, "message": e}
+        res = {"error": str(e.__class__.__name__), "message": str(e)}
+        if (str(e.__class__.__name__) == "IntegrityError"):
+            res["message"] = "Provided sprint number for this project already exists. Try again!"
+        return Response(json.dumps(res), status=400, mimetype='application/json')
 
 def read_sprints(request, db_config):
     try:
@@ -47,7 +52,7 @@ def read_sprints(request, db_config):
         db.close()
         return {"sprints": res}
     except Exception as e:
-        return {"error": e.__class__.__name__, "message": e}
+        return {"error": str(e.__class__.__name__), "message": str(e)}
 
 def read_item_composition(request, db_config):
     try:
@@ -62,7 +67,7 @@ def read_item_composition(request, db_config):
         db.close()
         return {"item_compositions": res}
     except Exception as e:
-        return {"error": e.__class__.__name__, "message": e}
+        return {"error": str(e.__class__.__name__), "message": str(e)}
 
 def update_sprint(request, db_config):
     try:
@@ -87,7 +92,7 @@ def update_sprint(request, db_config):
         db.close()
         return {"message": "Updated!"}
     except Exception as e:
-        return {"error": e.__class__.__name__, "message": e}
+        return {"error": str(e.__class__.__name__), "message": str(e)}
 
 def update_sprint_to_complete(request, db_config):
     try:
@@ -106,7 +111,7 @@ def update_sprint_to_complete(request, db_config):
         db.close()
         return {"message": "Updated!"}
     except Exception as e:
-        return {"error": e.__class__.__name__, "message": e}
+        return {"error": str(e.__class__.__name__), "message": str(e)}
 
 def delete_sprint(request, db_config):
     try:
@@ -124,4 +129,4 @@ def delete_sprint(request, db_config):
         db.close()
         return {"message": "Deleted!"}
     except Exception as e:
-        return {"error": e.__class__.__name__, "message": e}
+        return {"error": str(e.__class__.__name__), "message": str(e)}

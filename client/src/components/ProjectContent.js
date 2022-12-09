@@ -4,6 +4,7 @@ import { Button, DatePicker, Form, Input } from "antd";
 import { Modal } from "antd";
 import api from "../api";
 import { Select } from "antd";
+import dayjs from 'dayjs';
 const { Column } = Table;
 
 function ProjectContent(props) {
@@ -18,7 +19,8 @@ function ProjectContent(props) {
   const [scrumMasterList, setSM] = useState([]);
 
   const parseDate = (strDate) => {
-    return new Date(strDate).toDateString();
+    let date = new Date(strDate)
+    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate().toString().padStart(2, "0")}`
   };
 
   useEffect(() => {
@@ -99,10 +101,12 @@ function ProjectContent(props) {
     api
       .delete("/projects", { data: delBody })
       .then((res) => {
+        alert(res.data.message)
         props.setTable(0, null);
       })
       .catch((err) => {
         console.log(err);
+        alert(err.response.data.message)
       });
   };
 
@@ -125,10 +129,12 @@ function ProjectContent(props) {
       api
         .post("/projects", project)
         .then(function (res) {
+          alert(res.data.message)
           props.setTable(0, null);
         })
         .catch(function (err) {
           console.log(err);
+          alert(err.response.data.message)
         });
     } else {
       const project = {};
@@ -161,6 +167,7 @@ function ProjectContent(props) {
   };
 
   const showModal = () => {
+    console.log(currProject)
     setIsModalOpen(true);
   };
 
@@ -184,10 +191,11 @@ function ProjectContent(props) {
           Create Project
         </Button>
         <Modal
-          title="Basic Modal"
+          title={(modelOperation === "Create")?"Create Project":"Update Project"}
           open={isModalOpen}
           onOk={handleOk}
           onCancel={handleCancel}
+          footer={[]}
         >
           <Form
             name="basic"
@@ -213,9 +221,7 @@ function ProjectContent(props) {
                 },
               ]}
             >
-              <Input
-                // defaultValue={modelOperation === "Update" ? currProject.title : null}
-              />
+              <Input defaultValue={modelOperation === "Create" ? null : currProject.title }/>
             </Form.Item>
             <Form.Item
               label="Customer"
@@ -227,14 +233,7 @@ function ProjectContent(props) {
                 },
               ]}
             >
-              <Select
-                // defaultValue={
-                //   modelOperation === "Update"
-                //     ? customerList.find(
-                //         (item) => item.id === currProject.customer
-                //       ).name
-                //     : null
-                // }
+              <Select defaultValue={modelOperation === "Create" ? null : customerList.find((item) => item.id === currProject.customer).id}
                 options={customers}
               />
             </Form.Item>
@@ -249,7 +248,7 @@ function ProjectContent(props) {
                 },
               ]}
             >
-              <DatePicker />
+              <DatePicker defaultValue={modelOperation === "Create" ? null : dayjs(currProject.start_date, 'YYYY/MM/DD')}/>
             </Form.Item>
 
             <Form.Item
@@ -262,7 +261,7 @@ function ProjectContent(props) {
                 },
               ]}
             >
-              <DatePicker />
+              <DatePicker defaultValue={modelOperation === "Create" ? null : dayjs(currProject.end_date, 'YYYY/MM/DD')}/>
             </Form.Item>
             <Form.Item
               label="Project Manager"
@@ -274,8 +273,7 @@ function ProjectContent(props) {
                 },
               ]}
             >
-              <Select
-                // defaultValue={currProject.project_manager}
+              <Select defaultValue={modelOperation === "Create" ? null : projectManagerList.find((item) => item.id === currProject.project_manager).id}
                 options={projectManagers}
               />
             </Form.Item>
@@ -290,8 +288,7 @@ function ProjectContent(props) {
                 },
               ]}
             >
-              <Select
-                // defaultValue={currProject.scrum_master}
+              <Select defaultValue={modelOperation === "Create" ? null : scrumMasterList.find((item) => item.id === currProject.scrum_master).id}
                 options={scrumMaster}
               />
             </Form.Item>
@@ -319,16 +316,20 @@ function ProjectContent(props) {
         />
         <Column
           title="Project Manager"
-          render={(_, record) =>
-            projectManagerList.find((item) => record.project_manager)
+          render={(_, record) => {
+              let pm = projectManagerList.find((item) => record.project_manager)
+              return (pm) ? `${pm.first_name} ${pm.last_name}` : record.project_manager
+            }
           }
           dataIndex="project_manager"
           key="project_manager"
         />
         <Column
           title="Scrum Master"
-          render={(_, record) =>
-            scrumMasterList.find((item) => record.scrum_master)
+          render={(_, record) => {
+              let sm = scrumMasterList.find((item) => record.scrum_master)
+              return (sm) ? `${sm.first_name} ${sm.last_name}` : record.scrum_master
+            }
           }
           dataIndex="scrum_master"
           key="scrum_master"
@@ -340,7 +341,7 @@ function ProjectContent(props) {
         />
         <Column
           title="End Date"
-          render={(_, record) => parseDate(record.start_date)}
+          render={(_, record) => parseDate(record.end_date)}
           key="end_date"
         />
         {/* <Column

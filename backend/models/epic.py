@@ -20,7 +20,7 @@ def create_epic(request, db_config):
         db.close()
         return {"message": "Inserted!", "tuple_id": lastrowid}
     except Exception as e:
-        return {"error": e.__class__.__name__, "message": e}
+        return {"error": str(e.__class__.__name__), "message": str(e)}
 
 def read_epics(request, db_config):
     try:
@@ -37,7 +37,7 @@ def read_epics(request, db_config):
         db.close()
         return {"epics": res}
     except Exception as e:
-        return {"error": e.__class__.__name__, "message": e}
+        return {"error": str(e.__class__.__name__), "message": str(e)}
 
 def update_epic(request, db_config):
     try:
@@ -59,7 +59,7 @@ def update_epic(request, db_config):
         db.close()
         return {"message": "Updated!"}
     except Exception as e:
-        return {"error": e.__class__.__name__, "message": e}
+        return {"error": str(e.__class__.__name__), "message": str(e)}
 
 def delete_epic(request, db_config):
     try:
@@ -77,4 +77,4 @@ def delete_epic(request, db_config):
         db.close()
         return {"message": "Deleted!"}
     except Exception as e:
-        return {"error": e.__class__.__name__, "message": e}
+        return {"error": str(e.__class__.__name__), "message": str(e)}

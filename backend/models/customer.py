@@ -18,7 +18,7 @@ def create_customer(request, db_config):
         db.close()
         return {"message": "Inserted!", "tuple_id": lastrowid}
     except Exception as e:
-        return {"error": e.__class__.__name__, "message": e}
+        return {"error": str(e.__class__.__name__), "message": str(e)}
 
 
 def read_customers(request, db_config):
@@ -35,7 +35,7 @@ def read_customers(request, db_config):
         db.close()
         return {"customers": res}
     except Exception as e:
-        return {"error": e.__class__.__name__, "message": e}
+        return {"error": str(e.__class__.__name__), "message": str(e)}
 
 
 def update_customer(request, db_config):
@@ -56,7 +56,7 @@ def update_customer(request, db_config):
         db.close()
         return {"message": "Updated!"}
     except Exception as e:
-        return {"error": e.__class__.__name__, "message": e}
+        return {"error": str(e.__class__.__name__), "message": str(e)}
 
 
 def delete_customer(request, db_config):
@@ -75,4 +75,4 @@ def delete_customer(request, db_config):
         db.close()
         return {"message": "Deleted!"}
     except Exception as e:
-        return {"error": e.__class__.__name__, "message": e}
+        return {"error": str(e.__class__.__name__), "message": str(e)}

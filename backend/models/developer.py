@@ -19,7 +19,7 @@ def create_developer(request, db_config):
         db.close()
         return {"message": "Inserted!", "tuple_id": lastrowid}
     except Exception as e:
-        return {"error": e.__class__.__name__, "message": e}
+        return {"error": str(e.__class__.__name__), "message": str(e)}
 
 def read_developers(request, db_config):
     try:
@@ -35,7 +35,7 @@ def read_developers(request, db_config):
         db.close()
         return {"developers": res}
     except Exception as e:
-        return {"error": e.__class__.__name__, "message": e}
+        return {"error": str(e.__class__.__name__), "message": str(e)}
 
 def update_developer(request, db_config):
     try:
@@ -55,4 +55,4 @@ def update_developer(request, db_config):
         db.close()
         return {"message": "Updated!"}
     except Exception as e:
-        return {"error": e.__class__.__name__, "message": e}
+        return {"error": str(e.__class__.__name__), "message": str(e)}

@@ -20,7 +20,7 @@ def create_employee(request, db_config):
         db.close()
         return {"message": "Inserted!", "tuple_id": lastrowid}
     except Exception as e:
-        return {"error": e.__class__.__name__, "message": e}
+        return {"error": str(e.__class__.__name__), "message": str(e)}
 
 def read_employees(request, db_config):
     try:
@@ -36,7 +36,7 @@ def read_employees(request, db_config):
         db.close()
         return {"employees": res}
     except Exception as e:
-        return {"error": e.__class__.__name__, "message": e}
+        return {"error": str(e.__class__.__name__), "message": str(e)}
 
 def read_employee_name(request, db_config):
     try:
@@ -51,7 +51,7 @@ def read_employee_name(request, db_config):
         db.close()
         return {"full_name": full_name}
     except Exception as e:
-        return {"error": e.__class__.__name__, "message": e}
+        return {"error": str(e.__class__.__name__), "message": str(e)}
 
 def update_employee(request, db_config):
     try:
@@ -73,7 +73,7 @@ def update_employee(request, db_config):
         db.close()
         return {"message": "Updated!"}
     except Exception as e:
-        return {"error": e.__class__.__name__, "message": e}
+        return {"error": str(e.__class__.__name__), "message": str(e)}
 
 def delete_employee(request, db_config):
     try:
@@ -91,4 +91,4 @@ def delete_employee(request, db_config):
         db.close()
         return {"message": "Deleted!"}
     except Exception as e:
-        return {"error": e.__class__.__name__, "message": e}
+        return {"error": str(e.__class__.__name__), "message": str(e)}

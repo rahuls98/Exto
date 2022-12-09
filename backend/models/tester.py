@@ -19,7 +19,7 @@ def create_tester(request, db_config):
         db.close()
         return {"message": "Inserted!", "tuple_id": lastrowid}
     except Exception as e:
-        return {"error": e.__class__.__name__, "message": e}
+        return {"error": str(e.__class__.__name__), "message": str(e)}
 
 
 def read_testers(request, db_config):
@@ -36,7 +36,7 @@ def read_testers(request, db_config):
         db.close()
         return {"testers": res}
     except Exception as e:
-        return {"error": e.__class__.__name__, "message": e}
+        return {"error": str(e.__class__.__name__), "message": str(e)}
 
 
 def update_tester(request, db_config):
@@ -57,4 +57,4 @@ def update_tester(request, db_config):
         db.close()
         return {"message": "Updated!"}
     except Exception as e:
-        return {"error": e.__class__.__name__, "message": e}
+        return {"error": str(e.__class__.__name__), "message": str(e)}

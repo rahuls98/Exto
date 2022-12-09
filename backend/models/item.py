@@ -1,4 +1,6 @@
 import mysql.connector
+import json
+from flask import Response
 from util.utils import get_user_organisation, get_user_organisation_from_params, get_res
 
 def create_item(request, db_config):
@@ -21,7 +23,10 @@ def create_item(request, db_config):
         db.close()
         return {"message": "Inserted!", "tuple_id": lastrowid}
     except Exception as e:
-        return {"error": e.__class__.__name__, "message": e}
+        res = {"error": str(e.__class__.__name__), "message": str(e)}
+        if (str(e.__class__.__name__) == "IntegrityError"):
+            res["message"] = "Another item in this story has the same title. Try again!"
+        return Response(json.dumps(res), status=400, mimetype='application/json')
 
 def read_items(request, db_config):
     try:
@@ -30,15 +35,15 @@ def read_items(request, db_config):
         db = mysql.connector.connect(**db_config)
         cursor = db.cursor()
         cursor.execute(f'''
-            SELECT item.title, CONCAT(employee.first_name, ' ', employee.last_name) AS assigned_to, item.sprint, item.type, item.status
-            FROM item join employee on item.assigned_to=employee.id
+            SELECT *
+            FROM item
             WHERE story={story_id};
         ''')
         res = get_res(cursor=cursor)
         db.close()
         return {"items": res}
     except Exception as e:
-        return {"error": e.__class__.__name__, "message": e}
+        return {"error": str(e.__class__.__name__), "message": str(e)}
 
 def read_backlog_items(request, db_config):
     try:
@@ -52,7 +57,7 @@ def read_backlog_items(request, db_config):
         db.close()
         return {"backlog_items": res}
     except Exception as e:
-        return {"error": e.__class__.__name__, "message": e}
+        return {"error": str(e.__class__.__name__), "message": str(e)}
 
 def update_item(request, db_config):
     try:
@@ -82,7 +87,7 @@ def update_item(request, db_config):
         db.close()
         return {"message": "Updated!"}
     except Exception as e:
-        return {"error": e.__class__.__name__, "message": e}
+        return {"error": str(e.__class__.__name__), "message": str(e)}
 
 def delete_item(request, db_config):
     try:
@@ -100,4 +105,4 @@ def delete_item(request, db_config):
         db.close()
         return {"message": "Deleted!"}
     except Exception as e:
-        return {"error": e.__class__.__name__, "message": e}
+        return {"error": str(e.__class__.__name__), "message": str(e)}

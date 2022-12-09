@@ -147,7 +147,7 @@ const SprintContent = () => {
         return new Date(strDate).toDateString();
     };
 
-    const onFinish = (values) => {
+    const onFinish = async (values) => {
         const sprint = {};
         sprint.user_username = "user@nike.com";
         sprint.user_password = "user@nike.com";
@@ -162,12 +162,14 @@ const SprintContent = () => {
         .post("/sprints", sprint)
         .then(function (res) {
             console.log(res)
+            alert(res.data.message);
+            setIsModalOpen(false);
+            window.location.reload(false);
         })
         .catch(function (err) {
             console.log(err);
-            alert(err)
+            alert(err.response.data.message)
         });
-        setIsModalOpen(false);
     }
 
     const onFinishFailed = (errorInfo) => {
@@ -186,6 +188,18 @@ const SprintContent = () => {
         .catch(function (err) {
             console.log(err);
             alert(err)
+        });
+
+        api.get("/sprints", {
+            params: {
+                user_username: "user@nike.com",
+                user_password: "user@nike.com",
+            },
+        }).then(function (response) {
+            console.log(response.data.sprints)
+            window.location.reload(false);
+        }).catch(function (error) {
+            console.log(error);
         });
     }
 
@@ -313,7 +327,7 @@ const SprintContent = () => {
             </Form>
         </Modal>
         <Modal
-            title="Sprint metrics"
+            title="Overview of sprint items"
             open={isMetricsModalOpen}
             onCancel={handleMetricsModalCancel}
             footer={[]}
@@ -325,14 +339,14 @@ const SprintContent = () => {
         </Modal>
         <Table dataSource={sprints} style={{ paddingTop: 25 }}>
             <Column
-                title="Project"
-                dataIndex="project"
-                key="project"
-            />
-            <Column
                 title="Sprint number"
                 dataIndex="sprint_number"
                 key="sprint_number"
+            />
+            <Column
+                title="Project"
+                dataIndex="project"
+                key="project"
             />
             <Column
                 title="Start date"

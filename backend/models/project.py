@@ -1,4 +1,6 @@
 import mysql.connector
+import json
+from flask import Response
 from util.utils import get_user_organisation, get_user_organisation_from_params, get_res
 
 def create_project(request, db_config):
@@ -23,7 +25,10 @@ def create_project(request, db_config):
         db.close()
         return {"message": "Inserted!", "tuple_id": lastrowid}
     except Exception as e:
-        return {"error": e.__class__.__name__, "message": e}
+        res = {"error": str(e.__class__.__name__), "message": str(e)}
+        if (str(e.__class__.__name__) == "IntegrityError"):
+            res["message"] = "Another project has the same title. Try again!"
+        return Response(json.dumps(res), status=400, mimetype='application/json')
 
 def read_projects(request, db_config):
     try:
@@ -40,7 +45,7 @@ def read_projects(request, db_config):
         db.close()
         return {"projects": res}
     except Exception as e:
-        return {"error": e.__class__.__name__, "message": e}
+        return {"error": str(e.__class__.__name__), "message": str(e)}
 
 def update_project(request, db_config):
     try:
@@ -65,7 +70,7 @@ def update_project(request, db_config):
         db.close()
         return {"message": "Updated!"}
     except Exception as e:
-        return {"error": e.__class__.__name__, "message": e}
+        return {"error": str(e.__class__.__name__), "message": str(e)}
 
 def delete_project(request, db_config):
     try:
@@ -85,4 +90,4 @@ def delete_project(request, db_config):
         db.close()
         return {"message": "Deleted!"}
     except Exception as e:
-        return {"error": e.__class__.__name__, "message": e}
+        return {"error": str(e.__class__.__name__), "message": str(e)}

@@ -13,12 +13,12 @@ def create_projectmanager(request, db_config):
             VALUES ({employee_id});
         ''')
         db.commit()
-        cursor.lastrowid = cursor.lastrowid
+        lastrowid = cursor.lastrowid
         cursor.close()
         db.close()
         return {"message": "Inserted!", "tuple_id": lastrowid}
     except Exception as e:
-        return {"error": e.__class__.__name__, "message": e}
+        return {"error": str(e.__class__.__name__), "message": str(e)}
 
 def read_projectmanagers(request, db_config):
     try:
@@ -34,4 +34,4 @@ def read_projectmanagers(request, db_config):
         db.close()
         return {"project_managers": res}
     except Exception as e:
-        return {"error": e.__class__.__name__, "message": e}
+        return {"error": str(e.__class__.__name__), "message": str(e)}

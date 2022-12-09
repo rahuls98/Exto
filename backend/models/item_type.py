@@ -13,4 +13,4 @@ def read_itemtypes(request, db_config):
         db.close()
         return {"item_types": res}
     except Exception as e:
-        return {"error": e.__class__.__name__, "message": e}
+        return {"error": str(e.__class__.__name__), "message": str(e)}

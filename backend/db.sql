@@ -203,3 +203,45 @@ BEGIN
     RETURN full_name;
 END //
 DELIMITER ;
+
+INSERT INTO organisation (name, admin_username, admin_password, user_username, user_password) 
+VALUES ("Nike", "admin@nike.com", "admin@nike.com", "user@nike.com", "user@nike.com");
+
+INSERT INTO organisation (name, admin_username, admin_password, user_username, user_password) 
+VALUES ("Puma", "admin@puma.com", "admin@puma.com", "user@puma.com", "user@puma.com");
+
+INSERT INTO employee (email, organisation, first_name, last_name)
+VALUES ("alice.d@nike.com", 1, "Alice", "D");
+
+INSERT INTO employee (email, organisation, first_name, last_name)
+VALUES ("bob.t@nike.com", 1, "Bob", "T");
+
+INSERT INTO employee (email, organisation, first_name, last_name)
+VALUES ("charlie.p@nike.com", 1, "Charlie", "P");
+
+INSERT INTO employee (email, organisation, first_name, last_name)
+VALUES ("dave.s@nike.com", 1, "Dave", "S");
+
+INSERT INTO developer (id, domain)
+VALUES (1, "Web developer");
+
+INSERT INTO tester (id, domain)
+VALUES (2, "QA");
+
+INSERT INTO project_manager (id)
+VALUES (3);
+
+INSERT INTO scrum_master (id)
+VALUES (4);
+
+INSERT INTO customer (name, organisation)
+VALUES ("FC Barcelona", 1);
+
+INSERT INTO customer (name, organisation)
+VALUES ("Real Madrid", 2);
+
+INSERT INTO item_status (title, tag_color)
+VALUES ("Backlog", "grey"), ("Todo", "red"), ("In progress", "yellow"), ("Complete", "green");
+
+INSERT INTO item_type (title, tag_color)
+VALUES ("Task", "blue"), ("Bug", "orange"), ("Test", "purple");
